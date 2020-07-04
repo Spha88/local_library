@@ -1,4 +1,5 @@
 require('dotenv').config();
+var compression = require('compression');
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -29,6 +30,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// compress responses
+app.use(compression());
+
+// Routes
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/catalog', catalogRouter);  // Add catalog routes to middleware chain.
