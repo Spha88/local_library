@@ -1,11 +1,14 @@
 require('dotenv').config();
+
 var compression = require('compression');
+var helmet = require('helmet');
 var createError = require('http-errors');
-var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const moment = require('moment');
+
+var express = require('express');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -15,7 +18,8 @@ var app = express();
 
 // Set up mongoose connection
 const mongoose = require('mongoose');
-const mongoDB = process.env.MONGODB;
+const dev_db_url = process.env.MONGODB;
+const mongoDB = process.env.MONGODB_URI || dev_db_url;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error'));
@@ -23,6 +27,9 @@ db.on('error', console.error.bind(console, 'MongoDB connection error'));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+// Helmet is a collection of 12 middleware functions to help set some HTTP response headers
+app.use(helmet());
 
 app.use(logger('dev'));
 app.use(express.json());
